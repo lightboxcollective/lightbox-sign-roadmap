@@ -108,7 +108,7 @@ h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em;}
 
 <script>
 const SHEET_ID="1o9Uf2FJCmNzCK6WYJnfcbKIx61-TY8CHpiFQ_CDC_Yk";
-const CSV_URL="https://docs.google.com/spreadsheets/d/"+SHEET_ID+"/gviz/tq?tqx=out:csv";
+const CSV_URL="/sheet.csv";
 const LAUNCH=new Date(2026,7,1);
 
 const PHASE_META={
@@ -143,7 +143,7 @@ function statusClass(s){ s=(s||"").toLowerCase();
 
 async function loadData(){
   try{
-    const res=await fetch(CSV_URL+"&_="+Date.now());
+    const res=await fetch(CSV_URL+"?_="+Date.now());
     if(!res.ok) throw new Error("HTTP "+res.status);
     const csv=await res.text();
     const rows=parseCSV(csv);

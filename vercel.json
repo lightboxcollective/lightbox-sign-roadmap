@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/sheet.csv",
+      "destination": "https://docs.google.com/spreadsheets/d/1o9Uf2FJCmNzCK6WYJnfcbKIx61-TY8CHpiFQ_CDC_Yk/export?format=csv"
+    }
+  ]
+}
