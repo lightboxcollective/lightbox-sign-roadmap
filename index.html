@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LightBox Sign — Launch Roadmap</title>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f6f7fb; --card:#ffffff; --ink:#1c2230; --muted:#6a7184; --line:#e6e8f0;
+  --accent:#6d28d9; --green:#16a34a; --amber:#d97706; --gray:#9aa1b1;
+  --p1:#7c3aed; --p2:#2563eb; --p3:#0891b2; --p4:#d97706; --p5:#16a34a;
+  --lbl-w:140px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.45;padding:24px;}
+.wrap{max-width:1180px;margin:0 auto;}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px;}
+h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em;}
+.sub{color:var(--muted);font-size:14px;margin:0;}
+.sub a{color:var(--accent);text-decoration:none;font-weight:600}
+.sub a:hover{text-decoration:underline}
+.countdown{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;text-align:center;min-width:170px;box-shadow:0 1px 2px rgba(20,25,45,.04)}
+.countdown .num{font-size:30px;font-weight:700;color:var(--accent);line-height:1}
+.countdown .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:4px}
+.overall{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:20px;box-shadow:0 1px 2px rgba(20,25,45,.04)}
+.overall .row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:8px}
+.overall .pct{font-weight:700;font-size:15px}
+.bar{height:10px;background:#eef0f6;border-radius:6px;overflow:hidden}
+.bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#a855f7);width:0;transition:width .3s ease}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.filters .lab{font-size:12px;color:var(--muted);margin-right:2px}
+.chip{font:inherit;font-size:12.5px;border:1px solid var(--line);background:#fff;color:var(--muted);padding:5px 11px;border-radius:20px;cursor:pointer}
+.chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.chip.reload{margin-left:auto;border-color:var(--accent);color:var(--accent)}
+.timeline{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px 20px;margin-bottom:20px;box-shadow:0 1px 2px rgba(20,25,45,.04)}
+.timeline h2{font-size:16px;margin:0 0 14px}
+.gantt{position:relative;width:100%}
+.axis{position:relative;height:22px;margin-left:var(--lbl-w);border-bottom:1px solid var(--line)}
+.tick{position:absolute;top:0;transform:translateX(-50%);font-size:11px;color:var(--muted);white-space:nowrap}
+.tick:before{content:"";position:absolute;left:50%;top:18px;width:1px;height:1000px;background:var(--line);z-index:0}
+.grow{position:relative;display:flex;align-items:center;height:34px;margin-top:8px;z-index:1}
+.glabel{width:var(--lbl-w);flex:0 0 var(--lbl-w);font-size:12.5px;font-weight:600;padding-right:10px;text-align:right;color:var(--ink)}
+.gtrack{position:relative;flex:1;height:24px}
+.gbar{position:absolute;top:0;height:24px;border-radius:6px;overflow:hidden;display:flex;align-items:center;box-shadow:0 1px 2px rgba(20,25,45,.12);min-width:14px}
+.gbar .fill{position:absolute;left:0;top:0;height:100%;background:rgba(255,255,255,.32)}
+.gbar .gtxt{position:relative;font-size:11px;color:#fff;font-weight:600;padding:0 8px;white-space:nowrap;z-index:1;text-shadow:0 1px 1px rgba(0,0,0,.25)}
+.gdiamond{position:absolute;top:-1px;width:26px;height:26px;transform:translateX(-50%) rotate(45deg);border-radius:5px;box-shadow:0 1px 3px rgba(20,25,45,.25)}
+.gflag{position:absolute;top:3px;transform:translateX(10px);font-size:11px;font-weight:700;color:var(--p5);white-space:nowrap}
+.todayline{position:absolute;top:-2px;width:2px;background:#ef4444;z-index:3}
+.todaylbl{position:absolute;transform:translateX(-50%);font-size:10px;font-weight:700;color:#ef4444;z-index:3;white-space:nowrap}
+.phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.phase{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(20,25,45,.04);display:flex;flex-direction:column}
+.phase .head{padding:14px 14px 12px;border-top:4px solid var(--pc);}
+.phase .pnum{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pc)}
+.phase h2{font-size:16px;margin:2px 0 4px}
+.phase .dates{font-size:12px;color:var(--muted)}
+.phase .pbar{height:6px;background:#eef0f6;border-radius:4px;overflow:hidden;margin-top:10px}
+.phase .pbar > i{display:block;height:100%;background:var(--pc);width:0;transition:width .3s ease}
+.phase .ppct{font-size:11px;color:var(--muted);margin-top:5px}
+.group{padding:2px 14px}
+.group h3{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:12px 0 6px}
+.task{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;padding:6px 0;border-bottom:1px solid #f1f2f7}
+.task:last-child{border-bottom:none}
+.task .dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex:0 0 auto}
+.task .body{flex:1}
+.task .ttl{transition:color .15s}
+.task.done .ttl{color:var(--muted);text-decoration:line-through}
+.task .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:3px}
+.badge{font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:10px;border:1px solid transparent}
+.b-done{background:#dcfce7;color:#166534}
+.b-prog{background:#fef3c7;color:#92400e}
+.b-not{background:#eef0f6;color:#5b6273}
+.assignee{font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:10px}
+.a-shadai{background:#ede9fe;color:#6d28d9}
+.a-samuel{background:#dbeafe;color:#1e40af}
+.a-other{background:#f3f4f8;color:#5b6273}
+.foot{color:var(--muted);font-size:12px;text-align:center;margin-top:22px}
+.milestone .head{background:linear-gradient(135deg,#16a34a,#22c55e);border-top:none}
+.milestone .pnum,.milestone h2,.milestone .dates{color:#fff}
+.state{padding:40px;text-align:center;color:var(--muted);font-size:14px}
+.state a{color:var(--accent)}
+@media(max-width:640px){:root{--lbl-w:84px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>LightBox Sign — Launch Roadmap ⭐</h1>
+      <p class="sub">Target launch: <strong>Saturday, August 1, 2026</strong> &nbsp;•&nbsp; live from the
+        <a href="https://docs.google.com/spreadsheets/d/1o9Uf2FJCmNzCK6WYJnfcbKIx61-TY8CHpiFQ_CDC_Yk/edit" target="_blank">team tracker</a>
+        &nbsp;•&nbsp; <span id="updated"></span></p>
+    </div>
+    <div class="countdown">
+      <div class="num" id="cdNum">–</div>
+      <div class="lbl" id="cdLbl">days to launch</div>
+    </div>
+  </header>
+
+  <div id="content">
+    <div class="state" id="loading">Loading live data from the tracker…</div>
+  </div>
+
+  <p class="foot">Built from the launch whiteboard • app: sign.lightboxcollective.co • Aug 1, 2026 launch</p>
+</div>
+
+<script>
+const SHEET_ID="1o9Uf2FJCmNzCK6WYJnfcbKIx61-TY8CHpiFQ_CDC_Yk";
+const CSV_URL="https://docs.google.com/spreadsheets/d/"+SHEET_ID+"/gviz/tq?tqx=out:csv";
+const LAUNCH=new Date(2026,7,1);
+
+const PHASE_META={
+  "Phase 1 – Planning & Branding":{num:"Phase 1",color:"var(--p1)",start:[2026,5,15],end:[2026,5,26],dates:"Jun 15 – Jun 26"},
+  "Phase 2 – Build":{num:"Phase 2",color:"var(--p2)",start:[2026,5,22],end:[2026,6,10],dates:"Jun 22 – Jul 10"},
+  "Phase 3 – Testing & Sales Prep":{num:"Phase 3",color:"var(--p3)",start:[2026,6,8],end:[2026,6,20],dates:"Jul 8 – Jul 20"},
+  "Phase 4 – Launch Prep":{num:"Phase 4",color:"var(--p4)",start:[2026,6,20],end:[2026,6,31],dates:"Jul 20 – Jul 31"},
+  "Phase 5 – Launch Day":{num:"Phase 5",color:"var(--p5)",start:[2026,7,1],end:[2026,7,1],dates:"August 1",milestone:true}
+};
+const PHASE_ORDER=Object.keys(PHASE_META);
+let PHASES=[], FILTER="all";
+
+function parseCSV(text){
+  const rows=[]; let row=[],f="",q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+    else{
+      if(c==='"')q=true;
+      else if(c===','){row.push(f);f="";}
+      else if(c==='\n'){row.push(f);rows.push(row);row=[];f="";}
+      else if(c==='\r'){}
+      else f+=c;
+    }
+  }
+  if(f!==""||row.length){row.push(f);rows.push(row);}
+  return rows.filter(r=>r.length>1||(r.length===1&&r[0]!==""));
+}
+function statusClass(s){ s=(s||"").toLowerCase();
+  if(s.includes("done")||s.includes("complete"))return "done";
+  if(s.includes("progress"))return "prog"; return "not"; }
+
+async function loadData(){
+  try{
+    const res=await fetch(CSV_URL+"&_="+Date.now());
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const csv=await res.text();
+    const rows=parseCSV(csv);
+    const header=rows.shift().map(h=>h.trim().toLowerCase());
+    const idx=n=>header.indexOf(n);
+    const iP=idx("phase"),iG=idx("pillar"),iT=idx("task"),iA=idx("assignee"),iS=idx("status");
+    const map={};
+    rows.forEach(r=>{
+      const ph=(r[iP]||"").trim(); if(!ph)return;
+      const pil=(r[iG]||"").trim()||"Tasks";
+      (map[ph]=map[ph]||{}); (map[ph][pil]=map[ph][pil]||[]);
+      map[ph][pil].push({task:(r[iT]||"").trim(),assignee:(r[iA]||"").trim(),status:(r[iS]||"").trim()});
+    });
+    PHASES=PHASE_ORDER.filter(p=>map[p]).map(p=>({name:p,meta:PHASE_META[p],
+      groups:Object.keys(map[p]).map(g=>({name:g,tasks:map[p][g]}))}));
+    document.getElementById("updated").textContent="updated "+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    render();
+  }catch(e){
+    document.getElementById("content").innerHTML=
+      '<div class="state">Couldn\'t load the tracker. Make sure the Sheet is shared as '+
+      '<b>Anyone with the link · Viewer</b>, then refresh. '+
+      '<a href="https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/edit" target="_blank">Open the Sheet</a>'+
+      '<br><small>'+(e.message||e)+'</small></div>';
+  }
+}
+
+function matchFilter(a){ if(FILTER==="all")return true; const x=(a||"").toLowerCase();
+  if(FILTER==="shadai")return x.includes("shadai");
+  if(FILTER==="samuel")return x.includes("samuel");
+  if(FILTER==="unassigned")return x===""; return true; }
+function assigneeChip(a){ if(!a)return '<span class="assignee a-other">Unassigned</span>';
+  const x=a.toLowerCase(); const cls=x.includes("shadai")?"a-shadai":x.includes("samuel")?"a-samuel":"a-other";
+  return '<span class="assignee '+cls+'">'+a+'</span>'; }
+function counts(){ let t=0,d=0; PHASES.forEach(p=>p.groups.forEach(g=>g.tasks.forEach(tk=>{t++;if(statusClass(tk.status)==="done")d++;}))); return {t,d}; }
+function phasePct(p){ let t=0,d=0; p.groups.forEach(g=>g.tasks.forEach(tk=>{t++;if(statusClass(tk.status)==="done")d++;})); return {pct:t?Math.round(d/t*100):0,t,d}; }
+
+function render(){
+  const c=document.getElementById("content");
+  const ov=counts(), ovPct=ov.t?Math.round(ov.d/ov.t*100):0;
+  let h="";
+  h+='<div class="overall"><div class="row"><strong>Overall progress</strong>'+
+     '<span class="pct">'+ovPct+'%  ('+ov.d+'/'+ov.t+' done)</span></div>'+
+     '<div class="bar"><i style="width:'+ovPct+'%"></i></div>'+
+     '<div class="filters"><span class="lab">Show:</span>'+
+     ['all','shadai','samuel','unassigned'].map(f=>'<button class="chip'+(FILTER===f?' active':'')+'" data-f="'+f+'">'+
+       (f==="all"?"Everyone":f.charAt(0).toUpperCase()+f.slice(1))+'</button>').join('')+
+     '<button class="chip reload" id="reloadBtn">↻ Refresh</button></div></div>';
+  h+='<div class="timeline"><h2>Timeline</h2><div class="gantt" id="gantt"></div></div>';
+  h+='<div class="phases">';
+  PHASES.forEach(p=>{
+    const pp=phasePct(p), m=p.meta;
+    h+='<div class="phase'+(m.milestone?' milestone':'')+'" style="--pc:'+m.color+'">';
+    h+='<div class="head"><div class="pnum">'+m.num+'</div><h2>'+(m.milestone?'⭐ ':'')+
+       p.name.replace(/^Phase \d+ – /,'')+'</h2><div class="dates">'+m.dates+'</div>'+
+       '<div class="pbar"><i style="width:'+pp.pct+'%"></i></div>'+
+       '<div class="ppct">'+pp.d+' / '+pp.t+' done</div></div>';
+    p.groups.forEach(g=>{
+      const vis=g.tasks.filter(tk=>matchFilter(tk.assignee)); if(!vis.length)return;
+      h+='<div class="group"><h3>'+g.name+'</h3>';
+      vis.forEach(tk=>{
+        const sc=statusClass(tk.status);
+        const dotColor=sc==="done"?"var(--green)":sc==="prog"?"var(--amber)":"var(--gray)";
+        const badge=sc==="done"?'<span class="badge b-done">Done</span>':
+                    sc==="prog"?'<span class="badge b-prog">In progress</span>':'<span class="badge b-not">Not started</span>';
+        h+='<div class="task'+(sc==="done"?" done":"")+'"><span class="dot" style="background:'+dotColor+'"></span>'+
+           '<div class="body"><div class="ttl">'+tk.task+'</div><div class="meta">'+badge+assigneeChip(tk.assignee)+'</div></div></div>';
+      });
+      h+='</div>';
+    });
+    h+='</div>';
+  });
+  h+='</div>';
+  c.innerHTML=h;
+  c.querySelectorAll('.chip[data-f]').forEach(b=>b.onclick=()=>{FILTER=b.dataset.f;render();});
+  const rb=document.getElementById("reloadBtn"); if(rb)rb.onclick=loadData;
+  renderGantt();
+}
+
+function renderGantt(){
+  const g=document.getElementById("gantt"); if(!g)return;
+  const A0=new Date(2026,5,15), A1=new Date(2026,7,2);
+  const span=(A1-A0)/86400000, pos=d=>((d-A0)/86400000)/span*100;
+  const ticks=[[2026,5,15,"Jun 15"],[2026,5,22,"Jun 22"],[2026,5,29,"Jun 29"],
+    [2026,6,6,"Jul 6"],[2026,6,13,"Jul 13"],[2026,6,20,"Jul 20"],[2026,6,27,"Jul 27"],[2026,7,1,"Aug 1"]];
+  let h='<div class="axis">';
+  ticks.forEach(t=>{h+='<div class="tick" style="left:'+pos(new Date(t[0],t[1],t[2]))+'%">'+t[3]+'</div>';});
+  h+='</div>';
+  PHASES.forEach(p=>{
+    const m=p.meta, s=new Date(m.start[0],m.start[1],m.start[2]), e=new Date(m.end[0],m.end[1],m.end[2]);
+    const left=pos(s);
+    h+='<div class="grow"><div class="glabel">'+m.num+'</div><div class="gtrack">';
+    if(m.milestone){ h+='<div class="gdiamond" style="left:'+left+'%;background:'+m.color+'"></div><div class="gflag" style="left:'+left+'%">Aug 1 ⭐</div>'; }
+    else{ const w=Math.max(pos(e)-left,2), pct=phasePct(p).pct;
+      h+='<div class="gbar" style="left:'+left+'%;width:'+w+'%;background:'+m.color+'"><div class="fill" style="width:'+pct+'%"></div>'+
+         '<span class="gtxt">'+p.name.replace(/^Phase \d+ – /,'')+' · '+pct+'%</span></div>'; }
+    h+='</div></div>';
+  });
+  const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  if(today>=A0&&today<=A1)h+='<div class="todayline" style="left:0"></div><div class="todaylbl" style="left:0">Today</div>';
+  g.innerHTML=h;
+  if(today>=A0&&today<=A1){ requestAnimationFrame(()=>{
+    const track=g.querySelector('.gtrack'),line=g.querySelector('.todayline'),lbl=g.querySelector('.todaylbl');
+    if(track&&line){ const gR=g.getBoundingClientRect(),tR=track.getBoundingClientRect();
+      const x=(tR.left-gR.left)+tR.width*pos(today)/100;
+      line.style.left=x+"px"; line.style.height=(g.scrollHeight-2)+"px";
+      if(lbl){lbl.style.left=x+"px";lbl.style.top="-2px";} } }); }
+}
+
+function countdown(){
+  const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const diff=Math.round((LAUNCH-today)/86400000);
+  const n=document.getElementById("cdNum"),l=document.getElementById("cdLbl");
+  if(diff>0){n.textContent=diff;l.textContent=diff===1?"day to launch":"days to launch";}
+  else if(diff===0){n.textContent="🚀";l.textContent="launch day!";}
+  else{n.textContent=Math.abs(diff);l.textContent="days since launch";}
+}
+countdown(); loadData();
+</script>
+</body>
+</html>
