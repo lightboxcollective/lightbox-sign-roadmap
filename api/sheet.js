@@ -1,5 +1,5 @@
 module.exports = async (req, res) => {
-  const ID = "1o9Uf2FJCmNzCK6WYJnfcbKIx61-TY8CHpiFQ_CDC_Yk";
+  const ID = "11v0xeF4URa_yxYr3guluYZznrUIuMMz20Iz7YhoYHZg";
   const url = "https://docs.google.com/spreadsheets/d/" + ID + "/export?format=csv";
   try {
     const r = await fetch(url, { redirect: "follow" });
