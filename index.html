@@ -48,8 +48,8 @@ h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em;}
 .gbar .gtxt{position:relative;font-size:11px;color:#fff;font-weight:600;padding:0 8px;white-space:nowrap;z-index:1;text-shadow:0 1px 1px rgba(0,0,0,.25)}
 .gdiamond{position:absolute;top:-1px;width:26px;height:26px;transform:translateX(-50%) rotate(45deg);border-radius:5px;box-shadow:0 1px 3px rgba(20,25,45,.25)}
 .gflag{position:absolute;top:3px;transform:translateX(10px);font-size:11px;font-weight:700;color:var(--p5);white-space:nowrap}
-.todayline{position:absolute;top:-2px;width:2px;background:#ef4444;z-index:3}
-.todaylbl{position:absolute;transform:translateX(-50%);font-size:10px;font-weight:700;color:#ef4444;z-index:3;white-space:nowrap}
+.todayline{position:absolute;top:-2px;width:0;border-left:1px dashed rgba(239,68,68,.35);z-index:0;pointer-events:none}
+.todaylbl{position:absolute;transform:translateX(-50%);font-size:9px;font-weight:600;color:rgba(239,68,68,.55);z-index:0;white-space:nowrap}
 .phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
 .phase{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(20,25,45,.04);display:flex;flex-direction:column}
 .phase .head{padding:14px 14px 12px;border-top:4px solid var(--pc);}
