@@ -111,7 +111,7 @@ h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em;}
 <script>
 const SHEET_ID="11v0xeF4URa_yxYr3guluYZznrUIuMMz20Iz7YhoYHZg";
 const CSV_URL="/api/sheet";
-const WRITE_URL="https://script.google.com/macros/s/AKfycbyFNNQY5ATz8l_zeX3LRxK4hHbDHd6D3Jw2U596nbZN-QZLJfy-65P8DttGujz65LYX/exec";
+const WRITE_URL="https://script.google.com/macros/s/AKfycbyM-4ExluzraUbeqZqFu5vL6XiZ3bcVHI3MAUfQ0Wdk81Gw9Qn_OLspYIAF0U_YvDfUzw/exec";
 const STATUS_ORDER=["Not started","In progress","Done"];
 const LAUNCH=new Date(2026,7,1);
 
@@ -237,8 +237,7 @@ function cycleStatus(row){
   const next=STATUS_ORDER[(idx+1)%STATUS_ORDER.length];
   PHASES.forEach(p=>p.groups.forEach(g=>g.tasks.forEach(t=>{ if(t.row===row) t.status=next; })));
   render();
-  fetch(WRITE_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},
-    body:JSON.stringify({row:row,status:next})}).catch(function(){});
+  fetch(WRITE_URL+"?row="+row+"&status="+encodeURIComponent(next),{mode:"no-cors"}).catch(function(){});
   clearTimeout(window.__reft); window.__reft=setTimeout(loadData,3000);
 }
 
