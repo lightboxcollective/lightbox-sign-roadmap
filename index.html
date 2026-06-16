@@ -72,8 +72,8 @@ h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em;}
 .b-done{background:#dcfce7;color:#166534}
 .b-prog{background:#fef3c7;color:#92400e}
 .b-not{background:#eef0f6;color:#5b6273}
-.badge.click{cursor:pointer;transition:box-shadow .12s,filter .12s}
-.badge.click:hover{filter:brightness(.96);box-shadow:0 0 0 2px rgba(109,40,217,.18)}
+.badge.click,.assignee.click{cursor:pointer;transition:box-shadow .12s,filter .12s}
+.badge.click:hover,.assignee.click:hover{filter:brightness(.96);box-shadow:0 0 0 2px rgba(109,40,217,.18)}
 .assignee{font-size:10.5px;font-weight:600;padding:1px 7px;border-radius:10px}
 .a-shadai{background:#ede9fe;color:#6d28d9}
 .a-samuel{background:#dbeafe;color:#1e40af}
@@ -113,6 +113,7 @@ const SHEET_ID="11v0xeF4URa_yxYr3guluYZznrUIuMMz20Iz7YhoYHZg";
 const CSV_URL="/api/sheet";
 const WRITE_URL="https://script.google.com/macros/s/AKfycbyM-4ExluzraUbeqZqFu5vL6XiZ3bcVHI3MAUfQ0Wdk81Gw9Qn_OLspYIAF0U_YvDfUzw/exec";
 const STATUS_ORDER=["Not started","In progress","Done"];
+const ASSIGN_ORDER=["","Shadai","Sam","Shadai & Sam"];
 const LAUNCH=new Date(2026,7,1);
 
 const PHASE_META={
@@ -176,11 +177,13 @@ async function loadData(){
 
 function matchFilter(a){ if(FILTER==="all")return true; const x=(a||"").toLowerCase();
   if(FILTER==="shadai")return x.includes("shadai");
-  if(FILTER==="samuel")return x.includes("samuel");
+  if(FILTER==="sam")return x.includes("sam");
   if(FILTER==="unassigned")return x===""; return true; }
-function assigneeChip(a){ if(!a)return '<span class="assignee a-other">Unassigned</span>';
-  const x=a.toLowerCase(); const cls=x.includes("shadai")?"a-shadai":x.includes("samuel")?"a-samuel":"a-other";
-  return '<span class="assignee '+cls+'">'+a+'</span>'; }
+function assigneeChip(a,row){
+  const label=a?a:"Unassigned";
+  const x=(a||"").toLowerCase();
+  const cls=x.includes("shadai")?"a-shadai":x.includes("sam")?"a-samuel":"a-other";
+  return '<span class="assignee click '+cls+'" data-row="'+row+'" title="Tap to assign">'+label+'</span>'; }
 function counts(){ let t=0,d=0; PHASES.forEach(p=>p.groups.forEach(g=>g.tasks.forEach(tk=>{t++;if(statusClass(tk.status)==="done")d++;}))); return {t,d}; }
 function phasePct(p){ let t=0,d=0; p.groups.forEach(g=>g.tasks.forEach(tk=>{t++;if(statusClass(tk.status)==="done")d++;})); return {pct:t?Math.round(d/t*100):0,t,d}; }
 
@@ -192,9 +195,9 @@ function render(){
      '<span class="pct">'+ovPct+'%  ('+ov.d+'/'+ov.t+' done)</span></div>'+
      '<div class="bar"><i style="width:'+ovPct+'%"></i></div>'+
      '<div class="filters"><span class="lab">Show:</span>'+
-     ['all','shadai','samuel','unassigned'].map(f=>'<button class="chip'+(FILTER===f?' active':'')+'" data-f="'+f+'">'+
+     ['all','shadai','sam','unassigned'].map(f=>'<button class="chip'+(FILTER===f?' active':'')+'" data-f="'+f+'">'+
        (f==="all"?"Everyone":f.charAt(0).toUpperCase()+f.slice(1))+'</button>').join('')+
-     '<span class="lab" style="margin-left:14px">Tip: tap a task’s status to mark progress.</span>'+
+     '<span class="lab" style="margin-left:14px">Tip: tap a status to set progress, or an assignee to assign.</span>'+
      '<button class="chip reload" id="reloadBtn">↻ Refresh</button></div></div>';
   h+='<div class="timeline"><h2>Timeline</h2><div class="gantt" id="gantt"></div></div>';
   h+='<div class="phases">';
@@ -215,7 +218,7 @@ function render(){
         const bcls=sc==="done"?"b-done":sc==="prog"?"b-prog":"b-not";
         const badge='<span class="badge click '+bcls+'" data-row="'+tk.row+'" title="Tap to change status">'+blab+'</span>';
         h+='<div class="task'+(sc==="done"?" done":"")+'"><span class="dot" style="background:'+dotColor+'"></span>'+
-           '<div class="body"><div class="ttl">'+tk.task+'</div><div class="meta">'+badge+assigneeChip(tk.assignee)+'</div></div></div>';
+           '<div class="body"><div class="ttl">'+tk.task+'</div><div class="meta">'+badge+assigneeChip(tk.assignee,tk.row)+'</div></div></div>';
       });
       h+='</div>';
     });
@@ -226,7 +229,20 @@ function render(){
   c.querySelectorAll('.chip[data-f]').forEach(b=>b.onclick=()=>{FILTER=b.dataset.f;render();});
   const rb=document.getElementById("reloadBtn"); if(rb)rb.onclick=loadData;
   c.querySelectorAll('.badge.click').forEach(b=>b.onclick=()=>cycleStatus(+b.dataset.row));
+  c.querySelectorAll('.assignee.click').forEach(b=>b.onclick=()=>cycleAssignee(+b.dataset.row));
   renderGantt();
+}
+
+function cycleAssignee(row){
+  let cur="";
+  PHASES.forEach(p=>p.groups.forEach(g=>g.tasks.forEach(t=>{ if(t.row===row) cur=t.assignee; })));
+  let idx=ASSIGN_ORDER.findIndex(s=>s.toLowerCase()===(cur||"").toLowerCase());
+  if(idx<0) idx=0;
+  const next=ASSIGN_ORDER[(idx+1)%ASSIGN_ORDER.length];
+  PHASES.forEach(p=>p.groups.forEach(g=>g.tasks.forEach(t=>{ if(t.row===row) t.assignee=next; })));
+  render();
+  fetch(WRITE_URL+"?row="+row+"&assignee="+encodeURIComponent(next),{mode:"no-cors"}).catch(function(){});
+  clearTimeout(window.__reft); window.__reft=setTimeout(loadData,3000);
 }
 
 function cycleStatus(row){
