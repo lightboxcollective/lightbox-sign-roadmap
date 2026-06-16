@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
     if (!r.ok) { res.status(502).send("upstream " + r.status); return; }
     const text = await r.text();
     res.setHeader("Content-Type", "text/csv; charset=utf-8");
-    res.setHeader("Cache-Control", "s-maxage=30, stale-while-revalidate=60");
+    res.setHeader("Cache-Control", "no-store");
     res.status(200).send(text);
   } catch (e) {
     res.status(502).send("error: " + (e && e.message));
